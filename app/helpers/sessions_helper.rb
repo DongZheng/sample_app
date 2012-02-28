@@ -1,6 +1,11 @@
 module SessionsHelper
   def sign_in(user)
-    cookies.permanent.signed[:remember_token] = [user.id, user.salt]
+    #cookies.permanent.signed[:remember_token] = [user.id, user.salt]
+
+    # Refer to section 4.1 @ http://guides.rubyonrails.org/action_controller_overview.html#session
+    # Save the user ID in the session so it can be used in
+    # subsequent requests
+    session[:current_user_id] = user.id
     self.current_user = user
   end
 
@@ -11,12 +16,15 @@ module SessionsHelper
 
   # getter for @current_user
   def current_user
-    @current_user ||= user_from_remember_token
+    #@current_user ||= user_from_remember_token
+    @current_user ||= session[:current_user_id] && 
+    User.find_by_id(session[:current_user_id])
   end
 
   def sign_out
-    cookies.delete(:remember_token)
-    self.current_user = nil
+    #cookies.delete(:remember_token)
+    #self.current_user = nil
+    self.current_user = session[:current_user_id] = nil
   end
 
   # the rspec testing all passed even if user_from_remember_token is undefined, why??
