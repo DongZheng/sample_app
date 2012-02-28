@@ -12,7 +12,8 @@ class SessionsController < ApplicationController
           render 'new'
         else
           sign_in user
-          redirect_to user
+          # forward user to their intended destination
+          redirect_back_or user
         end
   end
 
