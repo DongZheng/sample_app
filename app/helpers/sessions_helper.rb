@@ -17,8 +17,7 @@ module SessionsHelper
   # getter for @current_user
   def current_user
     #@current_user ||= user_from_remember_token
-    @current_user ||= session[:current_user_id] && 
-    User.find_by_id(session[:current_user_id])
+    @current_user ||= session[:current_user_id] && User.find_by_id(session[:current_user_id])
   end
 
   def sign_out
