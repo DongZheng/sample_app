@@ -4,6 +4,11 @@ describe MicropostsController do
   render_views
 
   describe "access control" do
+    
+    it "should deny access to 'index'" do
+      get :index, :user_id => 1
+      response.should redirect_to(signin_path)
+    end
 
     it "should deny access to 'create'" do
       post :create
@@ -92,6 +97,22 @@ describe MicropostsController do
         lambda do 
           delete :destroy, :id => @micropost
         end.should change(Micropost, :count).by(-1)
+      end
+    end
+  end
+
+  describe "GET 'index'" do 
+
+    describe "for signed user" do
+
+      before(:each) do
+        @user = test_sign_in(Factory(:user))
+        @micropost = Factory(:micropost, :user => @user)
+      end
+
+      it "should display the microposts" do
+        get :index, :user_id => @user 
+        response.should redirect_to(user_path(@user))
       end
     end
   end
